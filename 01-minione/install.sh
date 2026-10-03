@@ -47,8 +47,23 @@ else
 fi
 grep -q -e '--password' <<<"$HELP" || die "miniONE không có cờ --password. Xem: bash $MINIONE_BIN --help"
 
+# --- Chờ khóa apt (Ubuntu Desktop hay chạy cập nhật nền bằng aptd/unattended-upgrades) ---
+# Nếu khóa đang bị giữ, bước "Install docker" của miniONE sẽ thất bại.
+sudo systemctl stop unattended-upgrades 2>/dev/null || true
+log_info "Chờ khóa apt được giải phóng (tối đa 10 phút)..."
+for _ in $(seq 1 120); do
+  if ! sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/lib/apt/lists/lock >/dev/null 2>&1; then
+    break
+  fi
+  sleep 5
+done
+if sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/lib/apt/lists/lock >/dev/null 2>&1; then
+  die "Khóa apt vẫn đang bị giữ sau 10 phút. Đợi cập nhật nền kết thúc (hoặc khởi động lại VM) rồi chạy lại."
+fi
+
 log_info "Cài đặt (10–20 phút). Log: $LOG"
-sudo bash "$MINIONE_BIN" "${args[@]}" 2>&1 | tee "$LOG"
+# Cờ thêm truyền thẳng cho miniONE, ví dụ: bash 01-minione/install.sh --force
+sudo bash "$MINIONE_BIN" "${args[@]}" "$@" 2>&1 | tee "$LOG"
 
 log_info "Xong. Kiểm tra: bash 01-minione/check.sh"
 log_info "Đăng nhập Sunstone: http://$VM_LAB_IP/  (oneadmin / $ONEADMIN_PASSWORD)"
