@@ -1,0 +1,5 @@
+# Mẫu C:\Users\<tên>\.wslconfig — giới hạn tài nguyên WSL2 để chừa RAM/CPU cho VM ONE-Lab.
+# Sao chép thành %UserProfile%\.wslconfig rồi chạy: wsl --shutdown
+[wsl2]
+memory=8GB
+processors=6

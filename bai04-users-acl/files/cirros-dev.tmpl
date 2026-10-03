@@ -1,0 +1,7 @@
+NAME   = "${CIRROS_DEV_TMPL}"
+CPU    = 0.5
+VCPU   = 1
+MEMORY = 256
+DISK   = [ IMAGE = "${CIRROS_IMG}", IMAGE_UNAME = "oneadmin" ]
+NIC    = [ NETWORK = "${LAB_NET}", NETWORK_UNAME = "oneadmin" ]
+GRAPHICS = [ TYPE = "VNC", LISTEN = "0.0.0.0" ]

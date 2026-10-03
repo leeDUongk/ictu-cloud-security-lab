@@ -1,0 +1,5 @@
+VM=[
+  VMS="2",
+  CPU="2",
+  MEMORY="2048",
+  RUNNING_VMS="2" ]

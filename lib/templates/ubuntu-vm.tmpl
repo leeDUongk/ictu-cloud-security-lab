@@ -1,0 +1,12 @@
+NAME   = "${VM_NAME}"
+CPU    = 1
+VCPU   = 1
+MEMORY = 1024
+DISK   = [ IMAGE = "${UBUNTU_IMG}", IMAGE_UNAME = "oneadmin" ]
+NIC    = [ NETWORK = "${LAB_NET}", NETWORK_UNAME = "oneadmin", IP = "${VM_IP}" ]
+GRAPHICS = [ TYPE = "VNC", LISTEN = "0.0.0.0" ]
+CONTEXT = [
+  NETWORK = "YES",
+  SSH_PUBLIC_KEY = "${SSH_PUBKEY}",
+  PASSWORD = "${GUEST_ROOT_PASSWORD}",
+  SET_HOSTNAME = "${VM_NAME}"${EXTRA_CONTEXT} ]

@@ -1,0 +1,7 @@
+# Trạng thái cục bộ do script ghi (ID ACL, v.v.)
+.state
+*.log
+*.swp
+*~
+Thumbs.db
+.DS_Store
