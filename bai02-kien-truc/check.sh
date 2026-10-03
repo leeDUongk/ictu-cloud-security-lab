@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-# Kiểm tra sinh viên đã điền đủ các mục trong REPORT.md. Exit code = số mục thiếu.
+# Kiểm tra sinh viên đã điền đủ các mục trong file báo cáo. Exit code = số mục thiếu.
+# Dùng: bash bai02-kien-truc/check.sh <đường dẫn file báo cáo .md>
+#   (file báo cáo nằm trong tài liệu lab của sinh viên, không nằm trong repo này)
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=../lib/common.sh
 source "$HERE/../lib/common.sh"
 
-REPORT="$HERE/REPORT.md"
+REPORT="${1:-}"
+[[ -n "$REPORT" ]] || die "Thiếu đường dẫn file báo cáo. Dùng: bash bai02-kien-truc/check.sh <file báo cáo .md>"
 SECTIONS=(
   "## 1."
   "## 2."

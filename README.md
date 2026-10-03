@@ -34,7 +34,10 @@ bash 01-minione/check.sh
 | `bai08-tbd/` | chưa xác định | khung rỗng |
 | `bai09-incident-response/` | (tên tạm) | khung rỗng |
 
-Mỗi bài có `README.md`, `setup.sh`, `check.sh`, `reset.sh`, `files/`, `REPORT.md`.
+Repo này chỉ chứa script và cấu hình để kéo về chạy trong terminal. Tài liệu lab (hướng dẫn, lý thuyết, mẫu báo cáo)
+được phát riêng cho sinh viên, không nằm trong repo.
+
+Mỗi bài có `setup.sh`, `check.sh`, `reset.sh` và `files/`.
 `setup.sh` và `reset.sh` chạy lại nhiều lần không lỗi. `check.sh` in `[PASS]`/`[FAIL]` và trả exit code bằng số tiêu chí FAIL.
 
 ## Quy ước
@@ -42,6 +45,4 @@ Mỗi bài có `README.md`, `setup.sh`, `check.sh`, `reset.sh`, `files/`, `REPOR
 - Chạy bằng user thường có sudo trên VM `ONE-Lab`: `bash baiXX/setup.sh`.
 - Lệnh OpenNebula chạy qua hàm `one()` (= `sudo -u oneadmin -H`).
 - Mọi mật khẩu và IP nằm trong `lib/lab.env`.
-- Sinh viên chỉ clone/pull repo này và nộp bài trên repo riêng của mình.
-
-<!-- TODO (giảng viên): quy trình nộp bài trên repo riêng của sinh viên -->
+- Sinh viên chỉ clone/pull repo này để lấy script.

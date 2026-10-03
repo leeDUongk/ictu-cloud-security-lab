@@ -11,7 +11,7 @@ param(
 
 # ---------- Parameters (edit if needed) ----------
 $VMName  = "ONE-Lab"
-$VMPath  = "C:\HyperV"
+$VMPath  = "D:\HyperV"
 $RAM     = 12GB
 $CPU     = 6
 $Disk    = 80GB
@@ -54,7 +54,7 @@ if (-not (Get-NetIPAddress -InterfaceAlias $ifAlias -IPAddress $HostIP -ErrorAct
 if (-not (Get-NetNat -Name "$Switch-NAT" -ErrorAction SilentlyContinue)) {
     $other = Get-NetNat -ErrorAction SilentlyContinue
     if ($other) { Warn "Existing NAT found: $($other.Name -join ', '). If New-NetNat fails, remove the old one (Remove-NetNat)." }
-    New-NetNat -Name "$Switch-NAT" -InternalIPInterfacePrefix $Prefix | Out-Null
+    New-NetNat -Name "$Switch-NAT" -InternalIPInterfaceAddressPrefix $Prefix -ErrorAction Stop | Out-Null
     Info "NAT $Prefix created"
 }
 
