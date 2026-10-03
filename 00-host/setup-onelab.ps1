@@ -9,19 +9,41 @@ param(
     [string]$IsoPath = "D:\setup\ubuntu-24.04.4-desktop-amd64.iso"   # or: -IsoPath "D:\path\file.iso"
 )
 
-# ---------- Parameters (edit if needed) ----------
+# ============================================================
+#  EDIT THIS BLOCK TO MATCH YOUR COMPUTER, THEN SAVE THE FILE
+#  (open this file in Notepad, change the numbers, run the script)
+# ============================================================
+#
+#  Check your computer first:  Task Manager > Performance > Memory (RAM) and CPU (logical processors).
+#
+#  Suggested VM size by the RAM of your Windows computer:
+#
+#      Windows RAM    $RAM (VM)   $CPU (vCPU)
+#      -----------    ---------   -----------
+#      24 GB or more    12 GB        6        <- the tested configuration
+#      16 GB             8 GB        4
+#      12 GB             6 GB        4
+#       8 GB             4 GB        2        <- lowest allowed; may be slow or fail
+#
+#  Rules: keep at least 3 GB RAM free for Windows; $CPU must not exceed your logical processors.
+#  Only 12 GB / 6 vCPU has been tested. Smaller sizes are suggestions.
+#
+$RAM     = 12GB                 # RAM for the VM: 4GB, 6GB, 8GB or 12GB (keep the "GB" after the number)
+$CPU     = 6                    # number of virtual CPUs for the VM
+$Disk    = 80GB                 # maximum size of the virtual disk (at least 40GB; it grows only as it is used)
+$VMPath  = "D:\HyperV"          # folder for the VM files; no D: drive? use "C:\HyperV" (needs free space)
+# ------------------------------------------------------------
+#  Do not change below this line unless you know what you do
+# ------------------------------------------------------------
 $VMName  = "ONE-Lab"
-$VMPath  = "D:\HyperV"
-$RAM     = 12GB
-$CPU     = 6
-$Disk    = 80GB
 $Switch  = "ONE-Lab"
 $HostIP  = "192.168.50.1"
 $Prefix  = "192.168.50.0/24"
-# -------------------------------------------------
+# ============================================================
 
 function Info($m){ Write-Host ">> $m" -ForegroundColor Cyan }
 function Warn($m){ Write-Host "!! $m" -ForegroundColor Yellow }
+function Fail($m){ Write-Host "XX $m" -ForegroundColor Red; exit 1 }
 
 # 0. Windows 11 required for nested virtualization on AMD
 $os = Get-CimInstance Win32_OperatingSystem
@@ -40,6 +62,26 @@ if ($hv.State -ne "Enabled") {
     exit 0
 }
 Info "Hyper-V: enabled"
+
+# 1b. Check the numbers you set above against this computer (stops before changing anything)
+$cs        = Get-CimInstance Win32_ComputerSystem
+$hostRamGB = [int][math]::Ceiling($cs.TotalPhysicalMemory / 1GB)   # a "8 GB" PC often reports ~7.4 GB; round up
+$hostCpus  = [int]$cs.NumberOfLogicalProcessors
+$ramGB     = [int]($RAM / 1GB)
+$diskGB    = [int]($Disk / 1GB)
+Info "This computer: $hostRamGB GB RAM, $hostCpus logical CPUs"
+Info "VM config you set: $ramGB GB RAM (static), $CPU vCPU, $diskGB GB disk max, files in $VMPath"
+
+if ($ramGB -lt 4)                { Fail "`$RAM is $ramGB GB. It must be at least 4GB. Edit the block at the top of this file." }
+if ($hostRamGB - $ramGB -lt 3)   { Fail "`$RAM is $ramGB GB but this computer has only $hostRamGB GB. Keep at least 3 GB free for Windows (try $([math]::Max(4, $hostRamGB - 4))GB). Edit the block at the top of this file." }
+if ($CPU -lt 2)                  { Fail "`$CPU is $CPU. It must be at least 2. Edit the block at the top of this file." }
+if ($CPU -gt $hostCpus)          { Fail "`$CPU is $CPU but this computer has only $hostCpus logical CPUs. Edit the block at the top of this file." }
+if ($diskGB -lt 40)              { Fail "`$Disk is $diskGB GB. It must be at least 40GB. Edit the block at the top of this file." }
+$drive = Split-Path -Qualifier $VMPath
+if (-not $drive -or -not (Test-Path "$drive\")) { Fail "Drive for `$VMPath ($VMPath) does not exist. Edit `$VMPath at the top of this file." }
+$freeGB = [math]::Round((Get-PSDrive ($drive.TrimEnd(':'))).Free / 1GB, 1)
+if ($freeGB -lt $diskGB) { Warn "Drive $drive has $freeGB GB free, less than the $diskGB GB maximum disk size. The disk grows with use; make room or lower `$Disk." }
+if ($ramGB -lt 12 -or $CPU -lt 6) { Warn "Only 12 GB RAM and 6 vCPU were tested. With $ramGB GB and $CPU vCPU the install can be slow or fail." }
 
 # 2. Internal switch + fixed host IP + NAT
 if (-not (Get-VMSwitch -Name $Switch -ErrorAction SilentlyContinue)) {
