@@ -29,7 +29,7 @@ Từ Windows kiểm tra: `ssh <user>@192.168.50.10`.
 ## 3. Lấy mã lab
 
 ```bash
-git clone https://github.com/<giang-vien>/ictu-cloud-security-lab.git
+git clone https://github.com/leeDUongk/ictu-cloud-security-lab.git
 cd ictu-cloud-security-lab
 ```
 

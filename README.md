@@ -13,7 +13,7 @@ Chi tiết: `00-host/`.
 ## Bắt đầu
 
 ```bash
-git clone <URL repo của giảng viên>
+git clone https://github.com/leeDUongk/ictu-cloud-security-lab.git
 cd ictu-cloud-security-lab
 bash 01-minione/install.sh
 bash 01-minione/check.sh
