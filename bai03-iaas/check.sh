@@ -1,21 +1,32 @@
 #!/usr/bin/env bash
-# Kiểm tra Bài 3. Exit code = số tiêu chí FAIL.
+# Bài 3 — kiểm tra sinh viên đã điền đủ các mục trong file báo cáo. Exit code = số mục thiếu.
+# Dùng: bash bai03-iaas/check.sh <đường dẫn file báo cáo .md>
+#   (file báo cáo nằm trong tài liệu lab của sinh viên, không nằm trong repo này)
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=../lib/common.sh
 source "$HERE/../lib/common.sh"
 
-require_cmd xmllint
+REPORT="${1:-}"
+[[ -n "$REPORT" ]] || die "Thiếu đường dẫn file báo cáo. Dùng: bash bai03-iaas/check.sh <file báo cáo .md>"
+SECTIONS=(
+  "## 1."
+  "## 2."
+  "## 3."
+  "## 4."
+  "## 5."
+)
 
-check "Image '$CIRROS_IMG' READY" \
-  test "$(one_xpath /IMAGE/STATE oneimage show -x "$CIRROS_IMG")" = "1"
-check "vnet '$LAB_NET' tồn tại"            vnet_exists "$LAB_NET"
-check "Template '$CIRROS_TMPL' tồn tại"    template_exists "$CIRROS_TMPL"
-check "Datastore '$LAB_DS' tồn tại"        datastore_exists "$LAB_DS"
-check "VM '$CIRROS_VM' RUNNING" \
-  test "$(one_xpath /VM/LCM_STATE onevm show -x "$CIRROS_VM")" = "3"
-check "Ping $IP_CIRROS_01 (sau khi đặt IP trong VM)" \
-  ping -c 2 -W 2 "$IP_CIRROS_01"
+[[ -f "$REPORT" ]] || die "Không thấy $REPORT"
+
+for s in "${SECTIONS[@]}"; do
+  title="$(grep -m1 -F "$s" "$REPORT" || true)"
+  if report_section_filled "$REPORT" "$s"; then
+    log_ok "Đã điền: ${title:-$s}"
+  else
+    log_fail "Chưa điền: ${title:-$s}"
+  fi
+done
 
 finish_check

@@ -26,7 +26,7 @@ bash 01-minione/check.sh
 | `00-host/` | Hyper-V/VMware, IP tĩnh, route | khung đầy đủ |
 | `01-minione/` | Cài miniONE | khung đầy đủ |
 | `bai02-kien-truc/` | Kiến trúc đám mây | khung đầy đủ |
-| `bai03-iaas/` | IaaS | khung đầy đủ |
+| `bai03-iaas/` | Ảo hóa và quản trị tài nguyên (chỉ có `check.sh` kiểm tra báo cáo) | khung đầy đủ |
 | `bai04-users-acl/` | User, nhóm, quota, ACL | khung đầy đủ |
 | `bai05-paas/` | PaaS | khung rỗng |
 | `bai06-web-nginx/` | (tên tạm) | khung rỗng |
