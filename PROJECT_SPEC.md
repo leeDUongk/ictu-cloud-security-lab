@@ -20,7 +20,7 @@
 | Máy host giảng viên | Windows 11 Pro, Ryzen AI 7 H 350, 32 GB RAM, đang dùng WSL2 |
 | Hypervisor ngoài | **Hyper-V** (chạy song song WSL2) — script `00-host/setup-onelab.ps1` đã có |
 | Phương án SV | VMware Workstation (tích "Virtualize Intel VT-x/EPT or AMD-V/RVI"); máy có WSL/Docker dùng Hyper-V hoặc boot entry `hypervisorlaunchtype off` |
-| VM lab | `ONE-Lab`: Ubuntu 24.04.4 **Desktop**, 12 GB RAM tĩnh, 6 vCPU, 80 GB, nested virt ON, MAC spoofing ON |
+| VM lab | `ONE-Lab`: Ubuntu 24.04.4 **Desktop**, user `sinhvien`, tên máy `ubuntu` (dấu nhắc `sinhvien@ubuntu`), 12 GB RAM tĩnh, 6 vCPU, 80 GB, nested virt ON, MAC spoofing ON |
 | Mạng host↔VM | Hyper-V Internal switch `ONE-Lab` + NAT `192.168.50.0/24`; host `192.168.50.1`, VM `192.168.50.10` (IP tĩnh qua `nmcli`) |
 | OpenNebula | miniONE **v6.10.3** (ghim phiên bản, KHÔNG dùng `latest` vì 7.x đổi Sunstone và yêu cầu 32 GiB RAM) |
 | Mạng VM lồng | bridge `minionebr`, `172.16.100.0/24`, gateway `172.16.100.1` (miniONE tạo sẵn, có NAT) |

@@ -24,7 +24,7 @@ sudo apt install -y openssh-server git curl libxml2-utils gettext-base netcat-op
 sudo systemctl enable --now ssh
 ```
 
-Từ Windows kiểm tra: `ssh <user>@192.168.50.10`.
+Từ Windows kiểm tra: `ssh sinhvien@192.168.50.10`.
 
 ## 3. Lấy mã lab
 
