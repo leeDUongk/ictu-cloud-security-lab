@@ -8,7 +8,7 @@ Thực hành học phần **An toàn điện toán đám mây** (ICTU) trên Ope
 ## Môi trường
 
 Ubuntu 24.04 (VM `ONE-Lab`, 12 GB RAM, 6 vCPU, 80 GB, nested virtualization) + OpenNebula miniONE **v6.10.3**.
-Chi tiết: `00-host/`.
+Tạo máy ảo trên Hyper-V bằng `00-host/setup-onelab.ps1`; dùng VMware thì xem `00-host/VMWARE.md`.
 
 ## Bắt đầu
 
@@ -19,30 +19,31 @@ bash 01-minione/install.sh
 bash 01-minione/check.sh
 ```
 
-## Các bài
+## Nội dung
 
-| Thư mục | Nội dung | Trạng thái |
-|---|---|---|
-| `00-host/` | Hyper-V/VMware, IP tĩnh, route | khung đầy đủ |
-| `01-minione/` | Cài miniONE | khung đầy đủ |
-| `bai02-kien-truc/` | Kiến trúc đám mây | khung đầy đủ |
-| `bai03-iaas/` | Ảo hóa và quản trị tài nguyên (chỉ có `check.sh` kiểm tra báo cáo) | khung đầy đủ |
-| `bai04-users-acl/` | User, nhóm, quota, ACL | khung đầy đủ |
-| `bai05-paas/` | PaaS | khung rỗng |
-| `bai06-web-nginx/` | (tên tạm) | khung rỗng |
-| `bai07-lamp/` | (tên tạm) | khung rỗng |
-| `bai08-tbd/` | chưa xác định | khung rỗng |
-| `bai09-incident-response/` | (tên tạm) | khung rỗng |
+| Thư mục | Mục đích |
+|---|---|
+| `00-host/` | Tạo máy ảo `ONE-Lab` trên Hyper-V hoặc VMware |
+| `01-minione/` | `install.sh` cài miniONE; `check.sh` kiểm tra hệ thống |
+| `bai02-kien-truc/` | `check.sh` kiểm tra báo cáo Bài thực hành 2 (6 mục) |
+| `bai03-iaas/` | `check.sh` kiểm tra báo cáo Bài thực hành 3 (5 mục) |
+| `bai04-users-acl/` | `check.sh` kiểm tra báo cáo Bài thực hành 4 (6 mục) |
+| `lib/` | `common.sh` (hàm dùng chung), `lab.env` (cấu hình và mật khẩu lab) |
 
 Repo này chỉ chứa script và cấu hình để kéo về chạy trong terminal. Tài liệu lab (hướng dẫn, lý thuyết, mẫu báo cáo)
 được phát riêng cho sinh viên, không nằm trong repo.
 
-Mỗi bài có `setup.sh`, `check.sh`, `reset.sh` và `files/`.
-`setup.sh` và `reset.sh` chạy lại nhiều lần không lỗi. `check.sh` in `[PASS]`/`[FAIL]` và trả exit code bằng số tiêu chí FAIL.
+## Kiểm tra báo cáo
+
+```bash
+bash bai0X-.../check.sh <đường dẫn REPORT.md>
+```
+
+`check.sh` in `[PASS]`/`[FAIL]` cho từng mục của báo cáo và trả exit code bằng số mục chưa điền.
 
 ## Quy ước
 
-- Chạy bằng user thường có sudo trên VM `ONE-Lab`: `bash baiXX/setup.sh`.
+- Chạy bằng user thường có sudo trên VM `ONE-Lab`.
 - Lệnh OpenNebula chạy qua hàm `one()` (= `sudo -u oneadmin -H`).
 - Mọi mật khẩu và IP nằm trong `lib/lab.env`.
 - Sinh viên chỉ clone/pull repo này để lấy script.
