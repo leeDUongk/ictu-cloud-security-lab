@@ -1,0 +1,13 @@
+# Bài 6 nâng cao — jail dùng hành động nginx-deny thay cho iptables mặc định.
+# Đặt tại /etc/fail2ban/jail.d/fireedge-auth.local (thay tệp của Bài 6).
+[fireedge-auth]
+enabled  = true
+port     = http,https
+filter   = fireedge-auth
+logpath  = /var/log/nginx/sunstone_access.log
+backend  = auto
+maxretry = 5
+findtime = 10m
+bantime  = 10m
+ignoreip = 127.0.0.1/8 ::1
+action   = nginx-deny

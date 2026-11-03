@@ -29,7 +29,7 @@ bash 01-minione/check.sh
 | `bai03-iaas/` | `check.sh` kiểm tra báo cáo Bài thực hành 3 (5 mục) |
 | `bai04-users-acl/` | `check.sh` kiểm tra báo cáo Bài thực hành 4 (6 mục) |
 | `bai05-paas/` | Ứng dụng mẫu Flask và phép thử (`app/`), tệp triển khai Nginx/OpenRC (`deploy/`), cấu hình chưa an toàn để đối chiếu (`sai/`), `check.sh` kiểm tra báo cáo Bài thực hành 5 (6 mục) |
-| `bai06-giao-dien/` | Cấu hình Nginx làm proxy TLS cho Sunstone (`nginx-sunstone.conf`), bộ lọc và jail fail2ban chặn dò mật khẩu (`fail2ban/`), `check.sh` kiểm tra báo cáo Bài thực hành 6 (6 mục) |
+| `bai06-giao-dien/` | Cấu hình Nginx làm proxy TLS cho Sunstone (`nginx-sunstone.conf`), bộ lọc và jail fail2ban chặn dò mật khẩu (`fail2ban/`), máy biên giả lập Cloudflare và hành động fail2ban chặn bằng Nginx cho bài nâng cao (`nangcao/`), `check.sh` kiểm tra báo cáo Bài thực hành 6 (6 mục) |
 | `lib/` | `common.sh` (hàm dùng chung), `lab.env` (cấu hình và mật khẩu lab) |
 
 Repo này chỉ chứa script và cấu hình để kéo về chạy trong terminal. Tài liệu lab (hướng dẫn, lý thuyết, mẫu báo cáo)
