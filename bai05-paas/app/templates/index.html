@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Phiếu đăng ký của tôi</h1>
+<ul>
+  {% for r in rows %}
+    <li><a href="{{ url_for('view_registration', reg_id=r.id) }}">Phiếu {{ r.id }}</a>: {{ r.course_code }} {{ r.name }}</li>
+  {% else %}
+    <li>Chưa có phiếu nào.</li>
+  {% endfor %}
+</ul>
+
+<h2>Tìm học phần</h2>
+<form action="{{ url_for('search') }}">
+  <input name="q" placeholder="Tên học phần">
+  <button type="submit">Tìm</button>
+</form>
+
+<h2>Đăng ký mới</h2>
+<form method="post" action="{{ url_for('register') }}">
+  <label>Mã học phần <input name="course_code" placeholder="INT205"></label>
+  <label>Ghi chú <input name="note"></label>
+  <button type="submit">Đăng ký</button>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Kết quả tìm: {{ q }}</h1>
+<ul>
+  {% for r in rows %}
+    <li>{{ r.code }} {{ r.name }}</li>
+  {% else %}
+    <li>Không có học phần phù hợp.</li>
+  {% endfor %}
+</ul>
+<p><a href="{{ url_for('index') }}">Quay lại</a></p>
+{% endblock %}

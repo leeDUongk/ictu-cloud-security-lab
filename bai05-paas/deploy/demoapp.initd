@@ -1,0 +1,19 @@
+#!/sbin/openrc-run
+# Dịch vụ OpenRC chạy ứng dụng mẫu bằng Gunicorn (Alpine).
+
+name="demoapp"
+description="Ung dung mau Bai 5 (Gunicorn)"
+command="/srv/demoapp/venv/bin/gunicorn"
+command_args="--workers 2 --bind 127.0.0.1:8000 app:app"
+command_user="webapp:webapp"
+directory="/srv/demoapp/app"
+command_background="yes"
+pidfile="/run/demoapp.pid"
+no_new_privs="yes"
+output_log="/var/log/demoapp/gunicorn.log"
+error_log="/var/log/demoapp/gunicorn.log"
+
+depend() {
+	need net
+	before nginx
+}

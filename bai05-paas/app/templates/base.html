@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Đăng ký học phần</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <strong>Đăng ký học phần</strong>
+    {% if session.username %}
+      <span>Xin chào {{ session.username }} · <a href="{{ url_for('logout') }}">Đăng xuất</a></span>
+    {% endif %}
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
