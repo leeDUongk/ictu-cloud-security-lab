@@ -1,0 +1,12 @@
+# Bài 6 — chặn tạm địa chỉ đăng nhập Sunstone sai quá 5 lần trong 10 phút.
+# Đặt tại /etc/fail2ban/jail.d/fireedge-auth.local
+[fireedge-auth]
+enabled  = true
+port     = http,https
+filter   = fireedge-auth
+logpath  = /var/log/nginx/sunstone_access.log
+backend  = auto
+maxretry = 5
+findtime = 10m
+bantime  = 10m
+ignoreip = 127.0.0.1/8 ::1
