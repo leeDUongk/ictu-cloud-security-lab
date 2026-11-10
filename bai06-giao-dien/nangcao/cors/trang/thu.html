@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thử CORS</title>
+<style>
+  body { font-family: "Segoe UI", Arial, sans-serif; margin: 18px; max-width: 900px; }
+  h2 { margin: 0 0 4px; }
+  .ok { color: #2e6b34; font-weight: bold; }
+  .chan { color: #b42318; font-weight: bold; }
+  pre { background: #f4f4f4; padding: 6px 8px; margin: 4px 0 12px; white-space: pre-wrap; }
+  .muc { margin-top: 10px; }
+</style>
+</head>
+<body>
+<h2 id="tieude"></h2>
+<p>Trang này chạy JavaScript gọi API của phòng Đào tạo tại <b>https://api.daotao.test</b>.
+Kết quả cho biết <b>script của trang này</b> có đọc được phản hồi hay không.</p>
+<div id="ketqua"></div>
+<script>
+// Trang thử dùng chung cho các site của Bài tập nâng cao 2 (CORS). Chỉ dùng trong lab.
+const API = "https://api.daotao.test";
+document.getElementById("tieude").textContent = "Trang thử tại " + location.origin;
+
+async function thu(ten, url, tuy_chon) {
+  const muc = document.createElement("div");
+  muc.className = "muc";
+  try {
+    const phan_hoi = await fetch(url, tuy_chon);
+    const noi_dung = await phan_hoi.text();
+    muc.innerHTML = "<b></b>: <span class='ok'>script đọc được phản hồi (HTTP " + phan_hoi.status + ")</span><pre></pre>";
+    muc.querySelector("pre").textContent = noi_dung.slice(0, 300);
+  } catch (loi) {
+    muc.innerHTML = "<b></b>: <span class='chan'>trình duyệt không cho script đọc phản hồi (" + loi.name + ")</span>";
+  }
+  muc.querySelector("b").textContent = ten;
+  document.getElementById("ketqua").appendChild(muc);
+}
+
+(async () => {
+  await thu("1. GET /api/hocphan, không kèm cookie", API + "/api/hocphan");
+  await thu("2. GET /api/toi, kèm cookie", API + "/api/toi", { credentials: "include" });
+  await thu("3. PUT /api/dangky (JSON), kèm cookie", API + "/api/dangky", {
+    method: "PUT", credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ hocphan: "Từ " + location.hostname })
+  });
+  // Phần H6: mở https://portal.daotao.test/thu.html?cong=1 để thử thêm cổng API cùng nguồn gốc.
+  if (location.hostname === "portal.daotao.test" && location.search.includes("cong=1")) {
+    await thu("4. GET /api/toi qua cổng cùng nguồn gốc của portal", "/api/toi", { credentials: "same-origin" });
+  }
+  document.title = "XONG";
+})();
+</script>
+</body>
+</html>
