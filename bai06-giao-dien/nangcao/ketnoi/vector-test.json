@@ -1,0 +1,19 @@
+{
+ "ghi_chu": "Vector test chung: hai ben chay va so ket qua truoc khi bat ket noi that. Khoa nay chi de thu.",
+ "khoa_ky": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
+ "yeu_cau": {
+  "phuong_thuc": "POST",
+  "route": "/may/su-kien",
+  "thoi_gian": 1794300000,
+  "nonce": "6f1c2b9e-3a4d-4c5e-8f70-1a2b3c4d5e6f",
+  "than": "{\"gia_tri\":\"cntt\",\"id\":\"0b8e1c52-7d3f-4b1a-9e6c-2f4a5b6c7d8e\",\"loai\":\"ho-so\",\"ma\":\"HS-0001\",\"phien_ban\":1}",
+  "chu_ky_mong_doi": "03b2b45991bd8a2f9e6c8217ca427037147d6f8f45aff217dfaaec0724c5328c"
+ },
+ "phan_hoi": {
+  "route": "/may/su-kien",
+  "thoi_gian": 1794300001,
+  "nonce_yeu_cau": "6f1c2b9e-3a4d-4c5e-8f70-1a2b3c4d5e6f",
+  "than": "{\"id\":\"0b8e1c52-7d3f-4b1a-9e6c-2f4a5b6c7d8e\",\"ket_qua\":\"da-nhan\"}",
+  "chu_ky_mong_doi": "6ab6f3cafe80d4a6a2135a506219361587133b8f990e2f347054f763d7b16362"
+ }
+}
