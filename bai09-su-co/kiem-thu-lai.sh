@@ -19,9 +19,12 @@ SSHOPT="-o StrictHostKeyChecking=accept-new -o ConnectTimeout=5 -o BatchMode=yes
 LOG=/var/log/one/oned.log
 
 echo "== Kịch bản 1: tài khoản sv-thu tắt máy ảo web-paas (ACL quá rộng) =="
-truoc=$(sudo wc -l < "$LOG")
-out=$(ONE_AUTH="$W/sv-thu.auth" onevm poweroff web-paas 2>&1); rc=$?
-echo "  Lệnh của sv-thu: onevm poweroff web-paas -> mã thoát $rc"
+truoc=$(sudo wc -l "$LOG" | cut -d' ' -f1)
+# Gọi theo ID: nếu sv-thu không còn quyền thì không thấy tên web-paas, lệnh theo tên sẽ
+# lỗi ngay ở phía máy khách và không tới oned (không để lại dấu vết).
+WID=$($ADM onevm list --no-header | awk '$4=="web-paas"{print $1; exit}')
+out=$(ONE_AUTH="$W/sv-thu.auth" onevm poweroff "$WID" 2>&1); rc=$?
+echo "  Lệnh của sv-thu: onevm poweroff $WID (web-paas) -> mã thoát $rc"
 [[ -n "$out" ]] && echo "  $out"
 sleep 2
 if (( rc == 0 )); then
@@ -40,13 +43,16 @@ fi
 
 echo
 echo "== Kịch bản 2: vm-khach kết nối dịch vụ nội bộ 8080 của web-paas =="
+# vm-khach có thể vừa được dựng lại: khóa máy chủ SSH mới, bỏ khóa cũ trong known_hosts.
+ssh-keygen -R $KHACH >/dev/null 2>&1
 if ! ssh $SSHOPT root@$KHACH true 2>/dev/null; then
   log_fail "Không SSH được vào vm-khach ($KHACH). Máy ảo còn ở mạng cách ly hoặc chưa dựng lại?"
   finish_check
 fi
-TAP=$($ADM onevm show web-paas | awk -F'"' '/TARGET=/{print $2; exit}')
+# Bắt trên tap của vm-khach (nguồn): gói bị nhóm bảo mật của web-paas chặn sẽ không tới tap của web-paas.
+TAP=$($ADM onevm show -x vm-khach | grep -o 'one-[0-9]*-0' | head -1)
 PCAP=$W/bangchung/kiem-thu-lai-$(date +%H%M%S).pcap
-sudo timeout 12 tcpdump -i "$TAP" -nn -U -w "$PCAP" "host $KHACH and tcp port 8080" 2>/dev/null &
+sudo timeout 14 tcpdump -i "$TAP" -nn -U -w "$PCAP" "host $KHACH and tcp port 8080" 2>/dev/null &
 sleep 2
 kq=$(ssh $SSHOPT root@$KHACH "nc -z -w 3 $WEB 8080 && echo MO || echo DONG" 2>/dev/null)
 wget_kq=$(ssh $SSHOPT root@$KHACH "wget -q -T 4 -O - http://$WEB:8080/sinhvien-sao-luu.csv 2>/dev/null | wc -l" 2>/dev/null)
@@ -61,7 +67,7 @@ syn=$(sudo tcpdump -nn -r "$PCAP" 'tcp[tcpflags] & tcp-syn != 0 and not tcp[tcpf
 tra=$(sudo tcpdump -nn -r "$PCAP" "src host $WEB" 2>/dev/null | wc -l)
 echo "  Bắt trên $TAP: $syn gói SYN từ vm-khach, $tra gói trả lời từ web-paas (tệp $PCAP)"
 if (( syn > 0 )); then
-  log_ok "Kịch bản 2 BỊ NHÌN THẤY trên giao diện tap của web-paas."
+  log_ok "Kịch bản 2 BỊ NHÌN THẤY trên giao diện tap $TAP của vm-khach."
 else
   log_fail "Kịch bản 2 không thấy gói nào trên $TAP."
 fi

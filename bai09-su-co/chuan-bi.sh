@@ -84,6 +84,7 @@ EOF
   $ADM onetemplate create "$TMPD/vm-khach-tmpl.txt" >/dev/null
 fi
 if ! ten_co onevm vm-khach; then
+  ssh-keygen -R $KHACH >/dev/null 2>&1
   $ADM onetemplate instantiate vm-khach-tmpl --name vm-khach >/dev/null
 fi
 WSTATE=$($ADM onevm list --no-header | awk '$4=="web-paas"{print $5; exit}')
@@ -103,12 +104,21 @@ if [ ! -s /srv/noibo/sinhvien-sao-luu.csv ]; then
     for(i=1;i<=40000;i++) printf "DTC%06d,Sinh Vien Gia %d,2005-%02d-%02d,09%08d,MOI-LAB9-%05d\n",
       i,i,1+int(rand()*12),1+int(rand()*28),int(rand()*1e8),i}' > /srv/noibo/sinhvien-sao-luu.csv
 fi
+# Dịch vụ "nội bộ" để máy sao lưu kéo tệp; lắng nghe trên mọi địa chỉ (đây là thiết kế chưa tốt).
+# Mỗi yêu cầu được ghi vào /var/log/noibo.log kèm địa chỉ nguồn và thời điểm.
+# Chạy cùng máy ảo qua dịch vụ "local" của OpenRC; địa chỉ lắng nghe đọc từ /etc/noibo.conf.
+[ -s /etc/noibo.conf ] || echo 'BIND=0.0.0.0' > /etc/noibo.conf
+cat > /etc/local.d/noibo.start <<'EOS'
+#!/bin/sh
+. /etc/noibo.conf
+cd /srv/noibo && setsid nohup python3 -m http.server 8080 --bind "$BIND" >>/var/log/noibo.log 2>&1 </dev/null &
+EOS
+chmod 755 /etc/local.d/noibo.start
+rc-update add local default >/dev/null 2>&1
 if ! netstat -tln 2>/dev/null | grep -q ':8080 '; then
-  # Dịch vụ "nội bộ" để máy sao lưu kéo tệp; lắng nghe trên mọi địa chỉ (đây là thiết kế chưa tốt).
-  busybox httpd -f -vv -p 0.0.0.0:8080 -h /srv/noibo >>/var/log/noibo.log 2>&1 &
-  sleep 1
+  /etc/local.d/noibo.start; sleep 2
 fi
-ls -l /srv/noibo; netstat -tln | grep 8080
+ls -l /srv/noibo; netstat -tln | grep ':8080 ' || echo "CHUA MO 8080"
 EOF
 
 echo

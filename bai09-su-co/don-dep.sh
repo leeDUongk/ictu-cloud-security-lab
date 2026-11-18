@@ -27,6 +27,10 @@ done
 echo "[2/5] Xóa template vm-khach-tmpl và mạng vnet-cach-ly"
 $ADM onetemplate delete vm-khach-tmpl 2>/dev/null && echo "      đã xóa vm-khach-tmpl"
 $ADM onevnet delete vnet-cach-ly 2>/dev/null && echo "      đã xóa vnet-cach-ly"
+# OpenNebula không xóa cầu nối trên host khi xóa mạng ảo; cầu nối cachlybr không còn máy nào gắn vào.
+if ip link show cachlybr >/dev/null 2>&1 && [ -z "$(ip -br link show master cachlybr)" ]; then
+  sudo ip link delete cachlybr && echo "      đã xóa cầu nối cachlybr trên host"
+fi
 
 echo "[3/5] Xóa quy tắc ACL thử còn sót và tài khoản sv-thu"
 for id in $($ADM oneacl list --no-header | awk '$2=="@1" && $3 ~ /^V/ && $5 ~ /m/ {print $1}'); do
@@ -37,9 +41,9 @@ rm -f "$W/sv-thu.auth"
 
 echo "[4/5] Dừng dịch vụ 8080 và xóa tệp mồi trong web-paas"
 if ssh $SSHOPT root@$WEB true 2>/dev/null; then
-  ssh $SSHOPT root@$WEB 'pkill -f "httpd -f -vv" ; rm -rf /srv/noibo /var/log/noibo.log; netstat -tln | grep -c ":8080 "'
+  ssh $SSHOPT root@$WEB 'pkill -f "[h]ttp.server 8080"; rm -rf /srv/noibo /var/log/noibo.log /etc/local.d/noibo.start /etc/noibo.conf; echo "so cong 8080 con nghe: $(netstat -tln | grep -c ":8080 ")"'
 else
-  echo "      web-paas đang tắt: lần bật sau dịch vụ 8080 không tự chạy lại, chỉ cần xóa /srv/noibo."
+  log_fail "web-paas đang tắt: bật lại ($ADM onevm resume web-paas) rồi chạy lại don-dep.sh."
 fi
 
 echo "[5/5] Đối chiếu với trạng thái ban đầu"

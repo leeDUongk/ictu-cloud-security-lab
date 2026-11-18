@@ -1,0 +1,5 @@
+DESCRIPTION = "Chi mo SSH, HTTP, HTTPS, ICMP vao web-paas; tam mo 8080 cho may sao luu"
+RULE = [ PROTOCOL = "TCP", RULE_TYPE = "inbound", RANGE = "22,80,443" ]
+RULE = [ PROTOCOL = "TCP", RULE_TYPE = "inbound", RANGE = "8080" ]
+RULE = [ PROTOCOL = "ICMP", RULE_TYPE = "inbound" ]
+RULE = [ PROTOCOL = "ALL", RULE_TYPE = "outbound" ]

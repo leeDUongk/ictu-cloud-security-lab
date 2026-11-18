@@ -1,0 +1,5 @@
+DESCRIPTION = "web-paas: HTTP, HTTPS cho moi nguon; SSH chi tu ONE-Lab 172.16.100.1; khong mo 8080"
+RULE = [ PROTOCOL = "TCP", RULE_TYPE = "inbound", RANGE = "80,443" ]
+RULE = [ PROTOCOL = "TCP", RULE_TYPE = "inbound", RANGE = "22", IP = "172.16.100.1", SIZE = "1" ]
+RULE = [ PROTOCOL = "ICMP", RULE_TYPE = "inbound" ]
+RULE = [ PROTOCOL = "ALL", RULE_TYPE = "outbound" ]
